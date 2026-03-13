@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anesguard — 마취, AI가 미리 지킵니다</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FAFAF8;
+      --text: #1E2A4A;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --sub: #64748B;
+      --card: #FFFFFF;
+      --danger: #EF4444;
+      --section-py: 140px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(250, 250, 248, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      transition: box-shadow 0.3s;
+    }
+
+    .nav.scrolled {
+      box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* ===== COMMON ===== */
+    .section {
+      padding: var(--section-py) 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-headline {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--sub);
+      line-height: 1.8;
+      max-width: 640px;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .hero canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      text-align: center;
+      pointer-events: none;
+      padding: 0 24px;
+    }
+
+    .hero-slogan {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text);
+      margin-bottom: 24px;
+      line-height: 1.15;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--sub);
+      line-height: 1.8;
+      max-width: 560px;
+      margin-bottom: 40px;
+    }
+
+    .hero-cta {
+      pointer-events: auto;
+      padding: 16px 40px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+
+    .hero-cta:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ===== PROBLEM ===== */
+    .problem {
+      text-align: center;
+    }
+
+    .problem .section-headline {
+      margin-bottom: 64px;
+    }
+
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 48px 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .stat-number {
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .stat-desc {
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.6;
+    }
+
+    /* ===== SOLUTION ===== */
+    .solution {
+      text-align: center;
+    }
+
+    .solution .section-sub {
+      margin: 0 auto;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      text-align: center;
+    }
+
+    .features .section-headline {
+      margin-bottom: 64px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 40px 28px 36px;
+      text-align: left;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #EFF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    /* ===== WHY ===== */
+    .why {
+      text-align: center;
+    }
+
+    .why .section-headline {
+      margin-bottom: 64px;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .why-item {
+      text-align: left;
+    }
+
+    .why-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .why-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .why-desc {
+      font-size: 15px;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    /* ===== TEAM ===== */
+    .team {
+      text-align: center;
+    }
+
+    .team .section-headline {
+      margin-bottom: 64px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 40px 28px;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      text-align: center;
+    }
+
+    .team-role {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .team-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .team-name-en {
+      font-size: 13px;
+      color: var(--sub);
+      margin-bottom: 16px;
+    }
+
+    .team-bio {
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    /* ===== ROADMAP ===== */
+    .roadmap {
+      text-align: center;
+    }
+
+    .roadmap .section-headline {
+      margin-bottom: 64px;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 840px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .timeline-item {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      padding-top: 48px;
+    }
+
+    .timeline-date {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .timeline-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      box-shadow: 0 0 0 4px #EFF6FF;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: calc(100% / 6);
+      right: calc(100% / 6);
+      height: 2px;
+      background: #E2E8F0;
+    }
+
+    .timeline-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .timeline-desc {
+      font-size: 13px;
+      color: var(--sub);
+    }
+
+    /* ===== CONTACT ===== */
+    .contact {
+      text-align: center;
+      padding: var(--section-py) 48px;
+    }
+
+    .contact .section-headline {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .contact-sub {
+      font-size: 16px;
+      color: var(--sub);
+      margin-bottom: 36px;
+    }
+
+    .contact-email-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .contact-email {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .contact-copy {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      background: var(--card);
+      color: var(--sub);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-copy:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .contact-copy svg {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .contact-copy.copied {
+      color: var(--sub);
+      border-color: #E2E8F0;
+    }
+
+    .contact-copy.swap svg {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 40px 48px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 13px;
+      color: var(--sub);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      :root { --section-py: 80px; }
+
+      .nav { padding: 0 20px; }
+      .nav-links { display: none; }
+
+      .section { padding: var(--section-py) 20px; }
+
+      .hero-slogan { font-size: 32px; letter-spacing: -1px; }
+      .hero-sub { font-size: 15px; }
+
+      .section-headline { font-size: 28px; }
+
+      .stat-cards,
+      .feature-grid,
+      .why-grid,
+      .team-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+      }
+
+      .timeline {
+        flex-direction: column;
+        gap: 32px;
+        align-items: flex-start;
+        padding-left: 40px;
+      }
+
+      .timeline::before {
+        top: 28px;
+        bottom: 28px;
+        left: 7px;
+        right: auto;
+        width: 2px;
+        height: auto;
+      }
+
+      .timeline-item {
+        text-align: left;
+      }
+
+      .timeline-dot {
+        position: absolute;
+        left: -40px;
+        top: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Anesguard</a>
+    <ul class="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#why">Why Us</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="pc"></canvas>
+    <div class="hero-content">
+      <h1 class="hero-slogan">마취, AI가 미리 지킵니다.</h1>
+      <p class="hero-sub">
+        어떤 병원에서든, 수술 전 마취 위험 평가를 AI가 돕습니다.<br>
+        기존 워크플로우에 자연스럽게 통합되어, 모든 환자에게 체계적인 사전 평가를 제공합니다.
+      </p>
+      <a href="#contact" class="hero-cta">도입 문의하기</a>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="section problem" id="problem">
+    <h2 class="section-headline fade-in">작은 수술은 있어도,<br>작은 마취는 없습니다.</h2>
+    <div class="stat-cards">
+      <div class="stat-card fade-in">
+        <div class="stat-number">92%</div>
+        <p class="stat-desc">수면마취 사고 중<br>사전 평가 기록이 없었던 비율</p>
+      </div>
+      <div class="stat-card fade-in">
+        <div class="stat-number">77%</div>
+        <p class="stat-desc">사고 발생 시 사망률</p>
+      </div>
+      <div class="stat-card fade-in">
+        <div class="stat-number">0</div>
+        <p class="stat-desc">현재 도입 가능한 솔루션의 수</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="section solution" id="solution">
+    <h2 class="section-headline fade-in">모든 병원에,<br>체계적인 마취 사전 평가를.</h2>
+    <p class="section-sub fade-in">
+      Anesguard는 병원의 기존 업무 흐름 안에서 작동합니다.
+      환자 접수부터 평가, 리포트 생성까지 — AI가 사전 평가 전 과정을 지원하여
+      어떤 규모의 병원이든 빈틈 없는 마취 안전 체계를 갖출 수 있습니다.
+    </p>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section features" id="features">
+    <h2 class="section-headline fade-in">FEATURES</h2>
+    <div class="feature-grid">
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+        </div>
+        <h3 class="feature-title">AI 수술 전 평가</h3>
+        <p class="feature-desc">최신 가이드라인을 기반으로 환자별 마취 위험을 AI가 자동 분석하고 등급을 산출합니다.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3 class="feature-title">고위험 환자 즉시 경고</h3>
+        <p class="feature-desc">비만, 호흡 문제, 심장 이력 등 핵심 위험 인자를 감지하여 즉각 경고합니다.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="feature-title">환자 신뢰 강화</h3>
+        <p class="feature-desc">"AI 기반 마취 안전 시스템 운영" — 환자에게 체계적인 안전 관리를 보여주는 즉각적 신뢰 요소.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        </div>
+        <h3 class="feature-title">당일 수술 취소 예방</h3>
+        <p class="feature-desc">약물 중단 사전 알림, 검사 오류 자동 감별로 수술 당일 취소와 지연을 사전에 차단합니다.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3 class="feature-title">평가 리포트 자동 생성</h3>
+        <p class="feature-desc">가이드라인 기반 사전 평가 기록을 자동으로 생성하여 법적 증빙과 진료 기록을 동시에 확보합니다.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 class="feature-title">최소 교육, 즉시 사용</h3>
+        <p class="feature-desc">기존 워크플로우에 통합된 직관적 UI. 별도 교육 없이 누구나 바로 사용할 수 있습니다.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="section why" id="why">
+    <h2 class="section-headline fade-in">WHY ANESGUARD?</h2>
+    <div class="why-grid">
+
+      <div class="why-item fade-in">
+        <div class="why-num">1</div>
+        <h3 class="why-title">설치 즉시 사용</h3>
+        <p class="why-desc">EMR 연동 없이 독립 실행. 어떤 병원이든 오늘 바로 시작할 수 있습니다.</p>
+      </div>
+
+      <div class="why-item fade-in">
+        <div class="why-num">2</div>
+        <h3 class="why-title">한국 의료 현실을 위한 유일한 솔루션</h3>
+        <p class="why-desc">국내 + 국제 가이드라인 병행. 한국어 UI. 국내 수가 체계 반영.</p>
+      </div>
+
+      <div class="why-item fade-in">
+        <div class="why-num">3</div>
+        <h3 class="why-title">현장 경험이 설계한 AI</h3>
+        <p class="why-desc">1만 건의 마취 경험과 300건 이상의 아차사고 데이터가 AI 로직의 기반입니다.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section team" id="team">
+    <h2 class="section-headline fade-in">TEAM</h2>
+    <div class="team-grid">
+
+      <div class="team-card fade-in">
+
+        <div class="team-role">Founder &amp; CEO</div>
+        <div class="team-name">오혜진</div>
+        <div class="team-name-en">Hyejin Oh</div>
+        <p class="team-bio">
+          마취통증의학과 전문의<br>
+          연세대학교 세브란스병원 마취통증의학과<br>
+          현 M.I.N.T 병원 마취과장<br>
+        </p>
+      </div>
+
+      <div class="team-card fade-in">
+
+        <div class="team-role">Technical Advisor</div>
+        <div class="team-name">황인하</div>
+        <div class="team-name-en">Inha Hwang</div>
+        <p class="team-bio">
+          현 굿플란트치과 원장<br>
+          메디컬 AI 스타트업 Denatoz CEO
+        </p>
+      </div>
+
+      <div class="team-card fade-in">
+
+        <div class="team-role">Clinical Advisor</div>
+        <div class="team-name">김정민</div>
+        <div class="team-name-en">Jungmin Kim</div>
+        <p class="team-bio">
+          연세대학교 세브란스병원 내과 교수
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="section roadmap" id="roadmap">
+    <h2 class="section-headline fade-in">ROAD MAP</h2>
+    <div class="timeline fade-in">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2026 하반기</div>
+        <div class="timeline-label">MVP 개발 & 베타 테스트</div>
+        <div class="timeline-desc">MVP Development & Beta Testing</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2027 상반기</div>
+        <div class="timeline-label">정식 서비스 출시</div>
+        <div class="timeline-desc">Official Launch</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2027 하반기</div>
+        <div class="timeline-label">SaMD 인허가 추진</div>
+        <div class="timeline-desc">SaMD Certification</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact" id="contact">
+    <h2 class="section-headline fade-in">CONTACT</h2>
+    <p class="contact-sub fade-in">Anesguard에 대해 더 알고 싶으시면 연락해 주세요.</p>
+    <div class="contact-email-row fade-in">
+      <a href="mailto:hjoh@anesguard.com" class="contact-email">hjoh@anesguard.com</a>
+      <button class="contact-copy" id="copyBtn" onclick="copyEmail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    &copy; 2026 Anesguard. All rights reserved.
+  </footer>
+
+  <script>
+    // ===== PARTICLE EFFECT (particles.md 결정 상수 적용) =====
+    var canvas = document.getElementById("pc");
+    var ctx = canvas.getContext("2d");
+    var W, H, dpr;
+    var mouse = { x: -9999, y: -9999, active: false };
+
+    var LINK_DIST = 120;
+    var MOUSE_RADIUS = 230;
+    var MOUSE_FORCE = 0.1;
+    var FRICTION = 0.87;
+    var BASE_SPEED = 0.4;
+    var MAX_PARTICLES = 200;
+    var SPAWN_RATE = 0.95;
+    var particles = [];
+
+    function resize() {
+      var rect = canvas.parentElement.getBoundingClientRect();
+      dpr = window.devicePixelRatio || 1;
+      W = rect.width;
+      H = rect.height;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function spawn() {
+      var y = Math.random() * H;
+      var speed = BASE_SPEED + Math.random() * 0.3;
+      var r = 2 + Math.random() * 2.5;
+      var alpha = 0.08 + Math.random() * 0.25;
+      return {
+        x: -10,
+        y: y,
+        vx: speed,
+        vy: (Math.random() - 0.5) * 0.15,
+        r: r,
+        alpha: alpha,
+        maxAlpha: alpha,
+        speed: speed,
+        age: 0,
+        fadeIn: 60 + Math.random() * 40
+      };
+    }
+
+    function init() {
+      resize();
+      particles.length = 0;
+      for (var i = 0; i < MAX_PARTICLES; i++) {
+        var p = spawn();
+        p.x = Math.random() * W;
+        p.age = p.fadeIn + 1;
+        particles.push(p);
+      }
+    }
+
+    canvas.parentElement.addEventListener("mousemove", function (e) {
+      var rect = canvas.parentElement.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+    });
+    canvas.parentElement.addEventListener("mouseleave", function () {
+      mouse.active = false;
+    });
+    window.addEventListener("resize", function () {
+      resize();
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      if (particles.length < MAX_PARTICLES && Math.random() < SPAWN_RATE) {
+        particles.push(spawn());
+      }
+
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.age++;
+
+        if (mouse.active) {
+          var dx = p.x - mouse.x;
+          var dy = p.y - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            var force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          }
+        }
+
+        var targetVx = p.speed;
+        p.vx += (targetVx - p.vx) * 0.02;
+        p.vy *= FRICTION;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x > W + 30) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        var lifeFrac = 1;
+        if (p.age < p.fadeIn) {
+          lifeFrac = p.age / p.fadeIn;
+        }
+        var fadeOut = W * 0.85;
+        if (p.x > fadeOut) {
+          lifeFrac *= 1 - (p.x - fadeOut) / (W - fadeOut + 30);
+        }
+        p.alpha = p.maxAlpha * Math.max(0, lifeFrac);
+      }
+
+      // 파티클 간 연결선
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i + 1; j < particles.length; j++) {
+          var a = particles[i], b = particles[j];
+          var dx = a.x - b.x, dy = a.y - b.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < LINK_DIST) {
+            var opacity = (1 - dist / LINK_DIST) * Math.min(a.alpha, b.alpha) * 0.8;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = "rgba(147, 197, 253," + opacity + ")";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 마우스 연결선
+      if (mouse.active) {
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          var dx = p.x - mouse.x, dy = p.y - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS) {
+            var opacity = (1 - dist / MOUSE_RADIUS) * 0.12;
+            ctx.beginPath();
+            ctx.moveTo(mouse.x, mouse.y);
+            ctx.lineTo(p.x, p.y);
+            ctx.strokeStyle = "rgba(59, 130, 246," + opacity + ")";
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 파티클 원
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        var a = p.alpha;
+        if (mouse.active) {
+          var dx = p.x - mouse.x, dy = p.y - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS) {
+            a = Math.min(a + (1 - dist / MOUSE_RADIUS) * 0.5, 0.65);
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(59, 130, 246," + a + ")";
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    init();
+    draw();
+
+    // ===== NAV SCROLL SHADOW =====
+    var nav = document.getElementById("nav");
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 10) {
+        nav.classList.add("scrolled");
+      } else {
+        nav.classList.remove("scrolled");
+      }
+    });
+
+    // ===== SCROLL FADE-IN (Intersection Observer) =====
+    var fadeEls = document.querySelectorAll(".fade-in");
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    fadeEls.forEach(function (el) {
+      observer.observe(el);
+    });
+
+    // ===== COPY EMAIL =====
+    var copyIconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    var checkIconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var copyTimer1 = null;
+    var copyTimer2 = null;
+
+    function copyEmail() {
+      var btn = document.getElementById("copyBtn");
+      if (copyTimer1) { clearTimeout(copyTimer1); copyTimer1 = null; }
+      if (copyTimer2) { clearTimeout(copyTimer2); copyTimer2 = null; }
+      btn.classList.remove("swap", "copied");
+      navigator.clipboard.writeText("hjoh@anesguard.com").then(function () {
+        btn.classList.add("swap");
+        copyTimer1 = setTimeout(function () {
+          btn.innerHTML = checkIconSvg;
+          btn.classList.remove("swap");
+          btn.classList.add("copied");
+          copyTimer2 = setTimeout(function () {
+            btn.classList.add("swap");
+            setTimeout(function () {
+              btn.innerHTML = copyIconSvg;
+              btn.classList.remove("swap", "copied");
+              copyTimer1 = null;
+              copyTimer2 = null;
+            }, 400);
+          }, 5000);
+        }, 400);
+      });
+    }
+  </script>
+</body>
+</html>
