@@ -559,13 +559,13 @@
         flex-direction: column;
         gap: 32px;
         align-items: flex-start;
-        padding-left: 40px;
+        padding-left: 32px;
       }
 
       .timeline::before {
-        top: 28px;
-        bottom: 28px;
-        left: 7px;
+        top: 8px;
+        bottom: 8px;
+        left: 0;
         right: auto;
         width: 2px;
         height: auto;
@@ -573,13 +573,14 @@
 
       .timeline-item {
         text-align: left;
+        padding-top: 0;
       }
 
       .timeline-dot {
         position: absolute;
-        left: -40px;
-        top: 0;
-        margin: 0;
+        left: -32px;
+        top: 4px;
+        transform: translateX(-50%);
       }
     }
   </style>
